@@ -2,6 +2,7 @@ import 'package:ble_test/ble_helpers/padlock_ble_helper.dart';
 import 'package:ble_test/unlock_device_bloc/unlock_device_state.dart';
 import 'package:ble_test/unlock_reactive_device_bloc/unlock_device_event.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dart:math' as math;
 
 class UnlockReactiveDeviceBloc
     extends Bloc<UnlockReactiveDeviceEvent, UnlockDeviceState> {
@@ -10,11 +11,22 @@ class UnlockReactiveDeviceBloc
     on<UnlockReactiveDeviceRequest>(
       (event, emit) async {
         padLockHelper = PadlockBLEHelper();
-        padLockHelper!.performAction(PadlockActions.UNLOCK, event.id,
+        padLockHelper!.performAction(
+            PadlockActions.UNLOCK, _normalizeMacAddress(event.id),
             token: event.token, newToken: event.token);
         print(event.id + "token ${event.token}");
       },
     );
     on<UnlockReactiveDeviceDispose>((event, emit) {});
   }
+}
+
+String _normalizeMacAddress(String mac) {
+  String newStr = '';
+  int step = 2;
+  for (int i = 0; i < mac.length; i += step) {
+    newStr += mac.substring(i, math.min(i + step, mac.length));
+    if (i + step < mac.length) newStr += ':';
+  }
+  return newStr;
 }

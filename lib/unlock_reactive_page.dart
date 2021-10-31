@@ -31,7 +31,9 @@ class _UnlockPageState extends State<UnlockReactivePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text("Reactive"),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -48,11 +50,12 @@ class _UnlockPageState extends State<UnlockReactivePage> {
               ),
             ),
             ElevatedButton(
-                onPressed: () {
-                  unlockDeviceBloc.add(UnlockReactiveDeviceRequest(
-                      widget.scanResult.id, token.text));
-                },
-                child: const Text("unlock"))
+              onPressed: () {
+                unlockDeviceBloc.add(UnlockReactiveDeviceRequest(
+                    widget.scanResult.id, token.text));
+              },
+              child: const Text("unlock"),
+            )
           ],
         ),
       ),

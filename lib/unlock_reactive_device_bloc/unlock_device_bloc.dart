@@ -11,8 +11,7 @@ class UnlockReactiveDeviceBloc
     on<UnlockReactiveDeviceRequest>(
       (event, emit) async {
         padLockHelper = PadlockBLEHelper();
-        padLockHelper!.performAction(
-            PadlockActions.UNLOCK, _normalizeMacAddress(event.id),
+        padLockHelper!.performAction(PadlockActions.UNLOCK, event.id,
             token: event.token, newToken: event.token);
         print(event.id + "token ${event.token}");
       },

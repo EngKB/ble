@@ -98,8 +98,7 @@ class PadlockBLEHelper {
     String? newToken,
   }) {
     print('normalized mac is $macAddress');
-    // TODO: This line below is for testing purposes
-    // macAddress = 'C5:D6:4D:82:0A:E5';
+
     if (!isConnected) {
       queuedAction = action;
       _connectToDevice(
@@ -136,7 +135,7 @@ class PadlockBLEHelper {
     ).listen((event) async {
       print('status is $event');
       Fluttertoast.showToast(
-          msg: event.toString().split('.')[1],
+          msg: event.connectionState.toString(),
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
@@ -158,12 +157,12 @@ class PadlockBLEHelper {
           } catch (e) {
             print('error in connection stream is $e');
           }
-          final services =
-              await flutterReactiveBle.discoverServices(macAddress);
-          services.forEach((service) {
-            print('services are ${service.characteristicIds}');
-            print('services are ${service.serviceId}');
-          });
+          // final services =
+          //     await flutterReactiveBle.discoverServices(macAddress);
+          // services.forEach((service) {
+          //   print('services are ${service.characteristicIds}');
+          //   print('services are ${service.serviceId}');
+          // });
 
           flutterReactiveBle
               .subscribeToCharacteristic(
@@ -235,7 +234,7 @@ class PadlockBLEHelper {
         ] +
         newT +
         curr;
-    print('the bufer is $buffer');
+    print('the buffer is $buffer');
 
     await flutterReactiveBle.writeCharacteristicWithoutResponse(
         QualifiedCharacteristic(
@@ -270,6 +269,29 @@ class PadlockBLEHelper {
           }
           final unlockSuccess = data.last;
           print('unlock status is $unlockSuccess');
+          if (unlockSuccess == 0) {
+            messageStream.add(PadlockMessageStatus.UNLOCK_SUCCESS);
+            lockStatusStream.add(BLELockStatus.UNLOCKED);
+          } else {
+            messageStream.add(PadlockMessageStatus.UNLOCK_FAILED);
+          }
+          final List<int> token = [];
+          for (int i = _ProtocolIndex.DATA + dataLength as int;
+              i < _ProtocolIndex.DATA + dataLength + 4;
+              i++) {
+            token.add(values[i]);
+          }
+          print('token is ${hex.encode(token)}');
+          break;
+        case _Commands.CHANGE_TOKEN_CMD:
+          final List<int> data = [];
+          for (int i = _ProtocolIndex.DATA;
+              i < _ProtocolIndex.DATA + dataLength;
+              i++) {
+            data.add(values[i]);
+          }
+          final unlockSuccess = data.last;
+          print('change token status is $unlockSuccess');
           if (unlockSuccess == 0) {
             messageStream.add(PadlockMessageStatus.UNLOCK_SUCCESS);
             lockStatusStream.add(BLELockStatus.UNLOCKED);
@@ -335,10 +357,11 @@ class PadlockBLEHelper {
     final encryptedData = encrypter.encryptBytes(buffer, iv: iv).bytes;
     print('encrypted data is  $encryptedData');
     await flutterReactiveBle.writeCharacteristicWithoutResponse(
-        QualifiedCharacteristic(
-            characteristicId: WRITE_CHAR_UUID,
-            serviceId: SERVICE_UUID,
-            deviceId: macAddress),
-        value: buffer);
+      QualifiedCharacteristic(
+          characteristicId: WRITE_CHAR_UUID,
+          serviceId: SERVICE_UUID,
+          deviceId: macAddress),
+      value: buffer,
+    );
   }
 }

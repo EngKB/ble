@@ -1,3 +1,4 @@
+import 'package:ble_test/ble_helpers/new_padlock_ble_helper.dart';
 import 'package:ble_test/reactive_scan_page.dart';
 import 'package:ble_test/scan_page.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ class MyHome extends StatefulWidget {
 class _MyHomeState extends State<MyHome> {
   @override
   void initState() {
+    NewPadlockBleHelper();
     FlutterBlueElves.instance.androidApplyLocationPermission((isOk) {
       print(isOk
           ? "User agrees to grant location permission"

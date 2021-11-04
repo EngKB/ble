@@ -29,10 +29,12 @@ class _ReactiveScanPageState extends State<ReactiveScanPage> {
     scanResult = flutterReactiveBle.scanForDevices(
       withServices: [Uuid.parse(serviceUuid)],
     ).listen((event) {
-      print('reactive scan' + event.id);
-      setState(() {
-        loResult.add(event);
-      });
+      if (!loResult.contains(event)) {
+        print('reactive scan' + event.id);
+        setState(() {
+          loResult.add(event);
+        });
+      }
     });
     super.initState();
   }
@@ -47,7 +49,29 @@ class _ReactiveScanPageState extends State<ReactiveScanPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Reactive Scan"),
+        title: Text("Padlock Scan"),
+        actions: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                print("Refresh");
+                loResult.clear();
+                scanResult.cancel();
+                scanResult = flutterReactiveBle.scanForDevices(
+                  withServices: [Uuid.parse(serviceUuid)],
+                ).listen((event) {
+                  if (!loResult.contains(event)) {
+                    print('reactive scan' + event.id);
+                    setState(() {
+                      loResult.add(event);
+                    });
+                  }
+                });
+              });
+            },
+            icon: const Icon(Icons.refresh),
+          )
+        ],
       ),
       body: ListView.builder(
         itemCount: loResult.length,
@@ -66,7 +90,7 @@ class _ReactiveScanPageState extends State<ReactiveScanPage> {
                   ),
                 );
               },
-              child: Text("View"),
+              child: const Text("View"),
             ),
           );
         },

@@ -1,31 +1,43 @@
-import 'package:ble_test/ble_helpers/padlock_ble_helper.dart';
-import 'package:ble_test/unlock_device_bloc/unlock_device_state.dart';
+import 'package:ble_test/ble_helpers/new_padlock_ble_helper.dart';
 import 'package:ble_test/unlock_reactive_device_bloc/unlock_device_event.dart';
+import 'package:ble_test/unlock_reactive_device_bloc/unlock_device_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'dart:math' as math;
 
 class UnlockReactiveDeviceBloc
-    extends Bloc<UnlockReactiveDeviceEvent, UnlockDeviceState> {
-  PadlockBLEHelper? padLockHelper;
-  UnlockReactiveDeviceBloc() : super(UnlockDeviceInitState()) {
+    extends Bloc<UnlockReactiveDeviceEvent, UnlockReactiveDeviceState> {
+  late NewPadlockBleHelper padLockHelper;
+  UnlockReactiveDeviceBloc() : super(UnlockReactiveDeviceInitState()) {
+    on<ConnectReactiveDeviceRequest>((event, emit) async {
+      padLockHelper.connectToDevice(event.macAddress);
+      padLockHelper.getConnectionInfoResponse.listen((e) {
+        if (e == BLEConnectionStatus.connecting) {
+          print(event.macAddress + " " + e.toString());
+          add(ConnectionStatusChanged(e));
+        }
+      });
+    });
     on<UnlockReactiveDeviceRequest>(
       (event, emit) async {
-        padLockHelper = PadlockBLEHelper();
-        padLockHelper!.performAction(PadlockActions.UNLOCK, event.id,
-            token: event.token, newToken: event.token);
-        print(event.id + "token ${event.token}");
+        padLockHelper.unLockDevice(event.id, event.token);
       },
     );
-    on<UnlockReactiveDeviceDispose>((event, emit) {});
+    on<ChangeTokenRequest>((event, emit) {
+      padLockHelper.changeToken(event.id, event.token, event.newToken);
+    });
+    on<CheckPowerPercentage>((event, emit) {
+      padLockHelper.checkPowerPercentage(event.id, event.token);
+    });
+    on<ConnectionStatusChanged>(
+      (event, emit) {
+        if (event.bleConnectionStatus == BLEConnectionStatus.disconnected) {
+          emit(UnlockReactiveDeviceDisconnected());
+        } else if (event.bleConnectionStatus == BLEConnectionStatus.connected) {
+          emit(UnlockReactiveDeviceConnected());
+        } else if (event.bleConnectionStatus ==
+            BLEConnectionStatus.connecting) {
+          emit(UnlockReactiveDeviceConnecting());
+        }
+      },
+    );
   }
-}
-
-String _normalizeMacAddress(String mac) {
-  String newStr = '';
-  int step = 2;
-  for (int i = 0; i < mac.length; i += step) {
-    newStr += mac.substring(i, math.min(i + step, mac.length));
-    if (i + step < mac.length) newStr += ':';
-  }
-  return newStr;
 }

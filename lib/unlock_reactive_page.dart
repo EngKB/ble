@@ -37,6 +37,7 @@ class _UnlockPageState extends State<UnlockReactivePage> {
         title: Text("Reactive"),
       ),
       body: BlocBuilder<UnlockReactiveDeviceBloc, UnlockReactiveDeviceState>(
+        bloc: unlockDeviceBloc,
         builder: (context, state) {
           if (state is UnlockReactiveDeviceConnecting) {
             return const Center(

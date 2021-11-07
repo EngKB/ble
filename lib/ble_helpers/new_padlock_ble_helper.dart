@@ -10,12 +10,14 @@ class _Commands {
   static const unlock = 0x00;
   static const changeToken = 0x0B;
   static const powerPercentage = 0x0A;
+  static const beamStatus = 0x09;
 }
 
 class _CommandLengths {
   static const unlock = 0x05;
   static const changeToken = 0x04;
   static const powerPercentage = 0x01;
+  static const beamStatus = 0x01;
 }
 
 enum BLEConnectionStatus {
@@ -143,7 +145,7 @@ class NewPadlockBleHelper {
     });
   }
 
-  unLockDevice(String token, String macAddress) async {
+  unlockDevice(String token, String macAddress) async {
     print("unlock " + macAddress + " with " + token);
     int unixTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     List<int> buffer = [
@@ -155,13 +157,20 @@ class NewPadlockBleHelper {
             [unixTime >> 24, unixTime >> 16, unixTime >> 8, unixTime]) +
         [0x01] +
         _parseToken(token);
-    await flutterReactiveBle.writeCharacteristicWithoutResponse(
-      QualifiedCharacteristic(
-          characteristicId: _writeUuid,
-          serviceId: _serviceUuid,
-          deviceId: macAddress),
-      value: _encryptData(buffer),
-    );
+    await flutterReactiveBle
+        .writeCharacteristicWithResponse(
+          QualifiedCharacteristic(
+              characteristicId: _writeUuid,
+              serviceId: _serviceUuid,
+              deviceId: macAddress),
+          value: _encryptData(buffer),
+        )
+        .then((value) => () {
+              print('unlock Device acknowledgment');
+            })
+        .catchError((err) {
+      print('unlock Device error ' + err);
+    });
   }
 
   checkPowerPercentage(String token, String macAddress) async {
@@ -173,12 +182,19 @@ class NewPadlockBleHelper {
         ] +
         [0x00] +
         _parseToken(token);
-    await flutterReactiveBle.writeCharacteristicWithoutResponse(
-        QualifiedCharacteristic(
-            characteristicId: _writeUuid,
-            serviceId: _serviceUuid,
-            deviceId: macAddress),
-        value: _encryptData(buffer));
+    await flutterReactiveBle
+        .writeCharacteristicWithResponse(
+            QualifiedCharacteristic(
+                characteristicId: _writeUuid,
+                serviceId: _serviceUuid,
+                deviceId: macAddress),
+            value: _encryptData(buffer))
+        .then((value) => () {
+              print('check Power Percentage acknowledgment');
+            })
+        .catchError((err) {
+      print('check Power Percentage error ' + err);
+    });
   }
 
   changeToken(String token, String newToken, String macAddress) async {
@@ -191,7 +207,32 @@ class NewPadlockBleHelper {
         _parseToken(newToken) +
         _parseToken(token);
 
-    await flutterReactiveBle.writeCharacteristicWithoutResponse(
+    await flutterReactiveBle
+        .writeCharacteristicWithResponse(
+            QualifiedCharacteristic(
+                characteristicId: _writeUuid,
+                serviceId: _serviceUuid,
+                deviceId: macAddress),
+            value: _encryptData(buffer))
+        .then((value) => () {
+              print('change token acknowledgment');
+            })
+        .catchError((err) {
+      print('check Power Percentage acknowledgment error ' + err);
+    });
+    ;
+  }
+
+  checkBeamStatus(String token, String macAddress) async {
+    print("check Beam status " + macAddress + " with " + token);
+    List<int> buffer = [
+          head,
+          _Commands.beamStatus,
+          _CommandLengths.beamStatus,
+        ] +
+        [0x00] +
+        _parseToken(token);
+    await flutterReactiveBle.writeCharacteristicWithResponse(
         QualifiedCharacteristic(
             characteristicId: _writeUuid,
             serviceId: _serviceUuid,
@@ -241,17 +282,22 @@ class NewPadlockBleHelper {
     switch (cmd) {
       case _Commands.unlock:
         {
-          print("unlock response " + data.toString());
+          print("unlock response: " + data.toString());
           break;
         }
       case _Commands.changeToken:
         {
-          print("change Token response" + data.toString());
+          print("change Token response: " + data.toString());
           break;
         }
       case _Commands.powerPercentage:
         {
-          print("power peercentage response" + data.toString());
+          print("power peercentage response: " + data.toString());
+          break;
+        }
+      case _Commands.beamStatus:
+        {
+          print('lock beam status response: ' + data.toString());
           break;
         }
     }

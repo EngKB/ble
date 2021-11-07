@@ -10,15 +10,13 @@ class UnlockReactiveDeviceBloc
     on<ConnectReactiveDeviceRequest>((event, emit) async {
       padLockHelper.connectToDevice(event.macAddress);
       padLockHelper.getConnectionInfoResponse.listen((e) {
-        if (e == BLEConnectionStatus.connecting) {
-          print(event.macAddress + " " + e.toString());
-          add(ConnectionStatusChanged(e));
-        }
+        print(event.macAddress + " " + e.toString());
+        add(ConnectionStatusChanged(e));
       });
     });
     on<UnlockReactiveDeviceRequest>(
       (event, emit) async {
-        padLockHelper.unLockDevice(event.id, event.token);
+        padLockHelper.unlockDevice(event.id, event.token);
       },
     );
     on<ChangeTokenRequest>((event, emit) {

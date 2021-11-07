@@ -29,7 +29,7 @@ class _ReactiveScanPageState extends State<ReactiveScanPage> {
     scanResult = flutterReactiveBle.scanForDevices(
       withServices: [Uuid.parse(serviceUuid)],
     ).listen((event) {
-      if (!loResult.contains(event)) {
+      if (!loResult.any((element) => element.id == event.id)) {
         print('reactive scan' + event.id);
         setState(() {
           loResult.add(event);

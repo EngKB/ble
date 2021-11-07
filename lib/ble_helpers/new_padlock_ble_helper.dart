@@ -183,7 +183,7 @@ class NewPadlockBleHelper {
         [0x00] +
         _parseToken(token);
     await flutterReactiveBle
-        .writeCharacteristicWithResponse(
+        .writeCharacteristicWithoutResponse(
             QualifiedCharacteristic(
                 characteristicId: _writeUuid,
                 serviceId: _serviceUuid,
@@ -208,7 +208,7 @@ class NewPadlockBleHelper {
         _parseToken(token);
 
     await flutterReactiveBle
-        .writeCharacteristicWithResponse(
+        .writeCharacteristicWithoutResponse(
             QualifiedCharacteristic(
                 characteristicId: _writeUuid,
                 serviceId: _serviceUuid,

@@ -61,7 +61,7 @@ class _ReactiveScanPageState extends State<ReactiveScanPage> {
                   withServices: [Uuid.parse(serviceUuid)],
                 ).listen((event) {
                   if (!loResult.any((element) => element.id == event.id)) {
-                    print('reactive scan' + event.id);
+                    print('reactive scan ' + event.id);
                     setState(() {
                       loResult.add(event);
                     });

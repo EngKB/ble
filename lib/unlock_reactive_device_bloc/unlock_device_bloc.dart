@@ -5,11 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UnlockReactiveDeviceBloc
     extends Bloc<UnlockReactiveDeviceEvent, UnlockReactiveDeviceState> {
-  late NewPadlockBleHelper padLockHelper;
+  NewPadlockBleHelper padLockHelper = NewPadlockBleHelper();
   UnlockReactiveDeviceBloc() : super(UnlockReactiveDeviceInitState()) {
     on<ConnectReactiveDeviceRequest>((event, emit) async {
       padLockHelper.connectToDevice(event.macAddress);
-      padLockHelper.getConnectionInfoResponse.listen((e) {
+      padLockHelper.getConnectionInfoResponse.listen((e) async {
         print(event.macAddress + " " + e.toString());
         add(ConnectionStatusChanged(e));
       });

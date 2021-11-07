@@ -40,5 +40,8 @@ class UnlockReactiveDeviceBloc
         }
       },
     );
+    on<UnlockReactiveDeviceDispose>((event, emit) {
+      if (state is! UnlockReactiveDeviceInitState) padLockHelper.dispose();
+    });
   }
 }

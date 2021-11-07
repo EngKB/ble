@@ -34,7 +34,7 @@ final _writeUuid = Uuid.parse('6e400002-b5a3-f393-e0a9-e50e24dcca9e');
 final _notifyUuid = Uuid.parse('6e400003-b5a3-f393-e0a9-e50e24dcca9e');
 
 class NewPadlockBleHelper {
-  NewPadlockBleHelper() {}
+  NewPadlockBleHelper();
   static late StreamSubscription<ConnectionStateUpdate> deviceStream;
   static final flutterReactiveBle = FlutterReactiveBle();
   late StreamController<BLEConnectionStatus> _connectionInfoResponse;
@@ -51,6 +51,11 @@ class NewPadlockBleHelper {
 
   Stream<String> get getInfoResponse =>
       _infoResponse.stream.asBroadcastStream();
+
+  dispose() {
+    flutterReactiveBle.deinitialize();
+  }
+
   connectToDevice(String macAddress) {
     print("connect to " + macAddress);
     _connectionInfoResponse = StreamController<BLEConnectionStatus>();
@@ -206,7 +211,6 @@ class NewPadlockBleHelper {
         .catchError((err) {
       print('check Power Percentage acknowledgment error ' + err);
     });
-    ;
   }
 
   checkBeamStatus(String token, String macAddress) async {

@@ -34,21 +34,7 @@ final _writeUuid = Uuid.parse('6e400002-b5a3-f393-e0a9-e50e24dcca9e');
 final _notifyUuid = Uuid.parse('6e400003-b5a3-f393-e0a9-e50e24dcca9e');
 
 class NewPadlockBleHelper {
-  NewPadlockBleHelper() {
-    print(_parseToken('00000000').length);
-    int unixTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-
-    print(([
-              head,
-              _Commands.unlock,
-              _CommandLengths.unlock,
-            ] +
-            Uint8List.fromList(
-                [unixTime >> 24, unixTime >> 16, unixTime >> 8, unixTime]) +
-            [0x01] +
-            _parseToken('00000000'))
-        .length);
-  }
+  NewPadlockBleHelper() {}
   static late StreamSubscription<ConnectionStateUpdate> deviceStream;
   static final flutterReactiveBle = FlutterReactiveBle();
   late StreamController<BLEConnectionStatus> _connectionInfoResponse;

@@ -52,10 +52,6 @@ class NewPadlockBleHelper {
   Stream<String> get getInfoResponse =>
       _infoResponse.stream.asBroadcastStream();
 
-  dispose() {
-    flutterReactiveBle.deinitialize();
-  }
-
   connectToDevice(String macAddress) {
     print("connect to " + macAddress);
     _connectionInfoResponse = StreamController<BLEConnectionStatus>();

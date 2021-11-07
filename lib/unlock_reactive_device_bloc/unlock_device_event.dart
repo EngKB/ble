@@ -32,3 +32,9 @@ class CheckPowerPercentage extends UnlockReactiveDeviceEvent {
   final String token;
   CheckPowerPercentage(this.id, this.token);
 }
+
+class CheckBeamStatus extends UnlockReactiveDeviceEvent {
+  final String id;
+  final String token;
+  CheckBeamStatus(this.id, this.token);
+}

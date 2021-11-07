@@ -16,14 +16,17 @@ class UnlockReactiveDeviceBloc
     });
     on<UnlockReactiveDeviceRequest>(
       (event, emit) async {
-        padLockHelper.unlockDevice(event.id, event.token);
+        padLockHelper.unlockDevice(event.token, event.id);
       },
     );
     on<ChangeTokenRequest>((event, emit) {
-      padLockHelper.changeToken(event.id, event.token, event.newToken);
+      padLockHelper.changeToken(event.token, event.newToken, event.id);
     });
     on<CheckPowerPercentage>((event, emit) {
-      padLockHelper.checkPowerPercentage(event.id, event.token);
+      padLockHelper.checkPowerPercentage(event.token, event.id);
+    });
+    on<CheckBeamStatus>((event, emit) {
+      padLockHelper.checkBeamStatus(event.token, event.id);
     });
     on<ConnectionStatusChanged>(
       (event, emit) {

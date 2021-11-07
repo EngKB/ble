@@ -88,6 +88,19 @@ class _UnlockPageState extends State<UnlockReactivePage> {
                     onPressed: state is UnlockReactiveDeviceWaiting
                         ? null
                         : () {
+                            unlockDeviceBloc.add(
+                              CheckBeamStatus(
+                                widget.scanResult.id,
+                                token.text,
+                              ),
+                            );
+                          },
+                    child: const Text("Check Status"),
+                  ),
+                  ElevatedButton(
+                    onPressed: state is UnlockReactiveDeviceWaiting
+                        ? null
+                        : () {
                             unlockDeviceBloc.add(ChangeTokenRequest(
                                 widget.scanResult.id, token.text, '00000000'));
                           },

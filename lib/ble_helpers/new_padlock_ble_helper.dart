@@ -114,7 +114,7 @@ class NewPadlockBleHelper {
                   deviceId: macAddress),
             )
                 .listen((event) {
-              _readInfoFromDevice(event, macAddress);
+              _read(event, macAddress);
             });
             break;
           }
@@ -150,7 +150,7 @@ class NewPadlockBleHelper {
               characteristicId: _writeUuid,
               serviceId: _serviceUuid,
               deviceId: macAddress),
-          value: _encryptData(buffer),
+          value: buffer,
         )
         .then((value) => () {
               print('unlock Device acknowledgment');
@@ -175,7 +175,7 @@ class NewPadlockBleHelper {
                 characteristicId: _writeUuid,
                 serviceId: _serviceUuid,
                 deviceId: macAddress),
-            value: _encryptData(buffer))
+            value: buffer)
         .then((value) => () {
               print('check Power Percentage acknowledgment');
             })
@@ -200,7 +200,7 @@ class NewPadlockBleHelper {
                 characteristicId: _writeUuid,
                 serviceId: _serviceUuid,
                 deviceId: macAddress),
-            value: _encryptData(buffer))
+            value: buffer)
         .then((value) => () {
               print('change token acknowledgment');
             })
@@ -223,7 +223,7 @@ class NewPadlockBleHelper {
             characteristicId: _writeUuid,
             serviceId: _serviceUuid,
             deviceId: macAddress),
-        value: _encryptData(buffer));
+        value: buffer);
   }
 
   List<int> _parseToken(String token) {
@@ -262,28 +262,27 @@ class NewPadlockBleHelper {
     return encrypter.encryptBytes(buffer, iv: iv).bytes;
   }
 
-  _readInfoFromDevice(List data, String macAddress) async {
-    print('response length: ' + data.length.toString());
+  _read(List data, String macAddress) async {
     final cmd = data[1];
     switch (cmd) {
       case _Commands.unlock:
         {
-          print("unlock response: " + data.toString());
+          print("$macAddress  unlock response: " + data.toString());
           break;
         }
       case _Commands.changeToken:
         {
-          print("change Token response: " + data.toString());
+          print("$macAddress change Token response: " + data.toString());
           break;
         }
       case _Commands.powerPercentage:
         {
-          print("power peercentage response: " + data.toString());
+          print("$macAddress power peercentage response: " + data.toString());
           break;
         }
       case _Commands.beamStatus:
         {
-          print('lock beam status response: ' + data.toString());
+          print('$macAddress lock beam status response: ' + data.toString());
           break;
         }
     }

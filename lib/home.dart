@@ -1,6 +1,5 @@
 import 'package:ble_test/ble_helpers/new_padlock_ble_helper.dart';
 import 'package:ble_test/reactive_scan_page.dart';
-import 'package:ble_test/scan_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_elves/flutter_blue_elves.dart';
 

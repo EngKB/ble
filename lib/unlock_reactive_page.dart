@@ -26,7 +26,6 @@ class _UnlockPageState extends State<UnlockReactivePage> {
   @override
   void dispose() {
     unlockDeviceBloc.add(UnlockReactiveDeviceDispose());
-
     super.dispose();
   }
 
@@ -116,12 +115,17 @@ class _UnlockPageState extends State<UnlockReactivePage> {
             );
           }
           return Center(
-            child: ElevatedButton(
-              onPressed: () {
-                unlockDeviceBloc
-                    .add(ConnectReactiveDeviceRequest(widget.scanResult.id));
-              },
-              child: const Text("Connect"),
+            child: Column(
+              children: [
+                Text(widget.scanResult.id),
+                ElevatedButton(
+                  onPressed: () {
+                    unlockDeviceBloc.add(
+                        ConnectReactiveDeviceRequest(widget.scanResult.id));
+                  },
+                  child: const Text("Connect"),
+                ),
+              ],
             ),
           );
         },

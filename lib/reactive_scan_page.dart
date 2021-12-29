@@ -88,6 +88,7 @@ class _ReactiveScanPageState extends State<ReactiveScanPage> {
                 loResult[i].id.toString(),
               ),
               Text(loResult[i].name),
+              Text(loResult[i].serviceData.length.toString()),
               Wrap(
                 children: loResult[i]
                     .serviceData

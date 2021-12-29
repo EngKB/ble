@@ -82,31 +82,22 @@ class _ReactiveScanPageState extends State<ReactiveScanPage> {
       body: ListView.builder(
         itemCount: loResult.length,
         itemBuilder: (context, i) {
-          return ListTile(
-            // subtitle: Text(utf8.decode(loResult[i].manufacturerData)),
-            title: Row(
-              children: [
-                Text(
-                  loResult[i].id.toString(),
-                ),
-                const Text(' '),
-                Text(loResult[i].name)
-              ],
-            ),
-            trailing: Text(utf8.decode(loResult[i].manufacturerData)),
-
-            // trailing: ElevatedButton(
-            //   onPressed: () {
-            //     Navigator.push(
-            //       context,
-            //       MaterialPageRoute(
-            //         builder: (context) =>
-            //             UnlockReactivePage(scanResult: loResult[i]),
-            //       ),
-            //     );
-            //   },
-            //   child: const Text("View"),
-            // ),
+          return Column(
+            children: [
+              Text(
+                loResult[i].id.toString(),
+              ),
+              Text(loResult[i].name),
+              Wrap(
+                children: loResult[i]
+                    .serviceData
+                    .entries
+                    .map((e) => Text(utf8.decode(e.value)))
+                    .toList(),
+              ),
+              Text(utf8.decode(loResult[i].manufacturerData)),
+              const Divider(),
+            ],
           );
         },
       ),

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:ble_test/unlock_reactive_page.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,9 @@ class _ReactiveScanPageState extends State<ReactiveScanPage> {
           : "The user does not agrees to turn on the Bluetooth permission");
     });
     scanResult = flutterReactiveBle.scanForDevices(
-      withServices: [Uuid.parse(serviceUuid)],
+      withServices: [
+        Uuid.parse(serviceUuid),
+      ],
     ).listen((event) {
       if (!loResult.any((element) => element.id == event.id)) {
         print('reactive scan ' + event.id);
@@ -49,7 +52,7 @@ class _ReactiveScanPageState extends State<ReactiveScanPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Padlock Scan"),
+        title: Text("Scan"),
         actions: [
           IconButton(
             onPressed: () {
@@ -58,7 +61,10 @@ class _ReactiveScanPageState extends State<ReactiveScanPage> {
                 loResult.clear();
                 scanResult.cancel();
                 scanResult = flutterReactiveBle.scanForDevices(
-                  withServices: [Uuid.parse(serviceUuid)],
+                  //Uuid.parse(serviceUuid)
+                  withServices: [
+                    Uuid.parse(serviceUuid),
+                  ],
                 ).listen((event) {
                   if (!loResult.any((element) => element.id == event.id)) {
                     print('reactive scan ' + event.id);
@@ -77,21 +83,30 @@ class _ReactiveScanPageState extends State<ReactiveScanPage> {
         itemCount: loResult.length,
         itemBuilder: (context, i) {
           return ListTile(
-            title: Text(
-              loResult[i].id.toString(),
+            // subtitle: Text(utf8.decode(loResult[i].manufacturerData)),
+            title: Row(
+              children: [
+                Text(
+                  loResult[i].id.toString(),
+                ),
+                const Text(' '),
+                Text(loResult[i].name)
+              ],
             ),
-            trailing: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        UnlockReactivePage(scanResult: loResult[i]),
-                  ),
-                );
-              },
-              child: const Text("View"),
-            ),
+            trailing: Text(utf8.decode(loResult[i].manufacturerData)),
+
+            // trailing: ElevatedButton(
+            //   onPressed: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //         builder: (context) =>
+            //             UnlockReactivePage(scanResult: loResult[i]),
+            //       ),
+            //     );
+            //   },
+            //   child: const Text("View"),
+            // ),
           );
         },
       ),

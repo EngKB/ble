@@ -47,7 +47,7 @@ class _MyHomeState extends State<MyHome> {
                   ),
                 );
               },
-              child: const Text("Reactive Scan"),
+              child: const Text("Scan"),
             ),
           ],
         ),

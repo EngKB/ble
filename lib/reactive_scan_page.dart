@@ -96,7 +96,7 @@ class _ReactiveScanPageState extends State<ReactiveScanPage> {
                     .map((e) => Text(e.value.toString()))
                     .toList(),
               ),
-              Text(loResult[i].manufacturerData.toString()),
+              Text('m: ' + loResult[i].manufacturerData.toString()),
               const Divider(),
             ],
           );

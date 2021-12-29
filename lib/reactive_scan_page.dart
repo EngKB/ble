@@ -93,10 +93,10 @@ class _ReactiveScanPageState extends State<ReactiveScanPage> {
                 children: loResult[i]
                     .serviceData
                     .entries
-                    .map((e) => Text(utf8.decode(e.value)))
+                    .map((e) => Text(e.value.toString()))
                     .toList(),
               ),
-              Text(utf8.decode(loResult[i].manufacturerData)),
+              Text(loResult[i].manufacturerData.toString()),
               const Divider(),
             ],
           );

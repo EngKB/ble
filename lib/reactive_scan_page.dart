@@ -98,10 +98,7 @@ class _ReactiveScanPageState extends State<ReactiveScanPage> {
                     .toList(),
               ),
               Text(
-                'm: ' +
-                    utf8.decode(
-                      gzip.decode(loResult[i].manufacturerData),
-                    ),
+                'm: ' + gzip.decode(loResult[i].manufacturerData).toString(),
               ),
               const Divider(),
             ],

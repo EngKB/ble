@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:ble_test/unlock_reactive_page.dart';
 import 'package:flutter/material.dart';
@@ -96,7 +97,12 @@ class _ReactiveScanPageState extends State<ReactiveScanPage> {
                     .map((e) => Text(e.value.toString()))
                     .toList(),
               ),
-              Text('m: ' + loResult[i].manufacturerData.toString()),
+              Text(
+                'm: ' +
+                    utf8.decode(
+                      zlib.decode(loResult[i].manufacturerData),
+                    ),
+              ),
               const Divider(),
             ],
           );

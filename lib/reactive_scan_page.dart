@@ -30,9 +30,7 @@ class _ReactiveScanPageState extends State<ReactiveScanPage> {
           : "The user does not agrees to turn on the Bluetooth permission");
     });
     scanResult = flutterReactiveBle.scanForDevices(
-      withServices: [
-        Uuid.parse(serviceUuid),
-      ],
+      withServices: [],
     ).listen((event) {
       if (!loResult.any((element) => element.id == event.id)) {
         print('reactive scan ' + event.id);
@@ -64,9 +62,7 @@ class _ReactiveScanPageState extends State<ReactiveScanPage> {
                 scanResult.cancel();
                 scanResult = flutterReactiveBle.scanForDevices(
                   //Uuid.parse(serviceUuid)
-                  withServices: [
-                    Uuid.parse(serviceUuid),
-                  ],
+                  withServices: [],
                 ).listen((event) {
                   if (!loResult.any((element) => element.id == event.id)) {
                     print('reactive scan ' + event.id);
